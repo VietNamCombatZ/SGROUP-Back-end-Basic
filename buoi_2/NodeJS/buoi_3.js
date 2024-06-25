@@ -47,16 +47,36 @@ app.get("/crud_json_objects", (req, res) => {
   res.send(obj);
 });
 
-app.get("/crud_json_objects/:id", (req, res) => {
+// app.get("/crud_json_objects/:id", (req, res,next) => {
+//   let obj = readData();
+//   res.send(obj);
+// });
+
+// app.get("/crud_json_objects/:id", (req, res) => {
+//   let obj = readData();
+//   let objFind = obj.find((item) => item.id == parseInt(req.params.id));
+
+//   if (objFind) {
+//     res.send(objFind);
+//   } else {
+//     res.status(404).send("No object matches with the given id");
+//   }
+// });
+
+app.get("/crud_json_objects/:id", (req, res,next) => {
   let obj = readData();
   let objFind = obj.find((item) => item.id == parseInt(req.params.id));
 
   if (objFind) {
-    res.send(objFind);
+    next();
   } else {
     res.status(404).send("No object matches with the given id");
   }
-});
+},
+function (req,res,next){
+  res.send(objFind);
+}
+);
 
 // UPDATE
 
