@@ -16,9 +16,11 @@
 7. Biến môi trường
 
 8. Các cách viết query từ code -> database
-- C1: SQL raw
+- C1: SQL raw 
 - C2: Query builder
 - C3: Object relational mapping
+
+-findAll() function
 
 
 

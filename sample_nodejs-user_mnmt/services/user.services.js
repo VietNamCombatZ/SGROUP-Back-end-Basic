@@ -8,7 +8,7 @@ const getAllUsers = async () => {
   //   console.log(result);
   // });
   try {
-    const users = await db.query("SELECT * FROM users");
+    const users = await db.query("SELECT * FROM users"); // !! nó chỉ select hàng đầu trong bảng , sửa lại
     return users[0];
   } catch (err) {
     throw err;
@@ -31,6 +31,7 @@ const getUserById = async (ID) => {
       console.log("No matches ID");
       return false;
     }
+
   } catch (err) {
     console.log("Error while execute");
     return false;
@@ -68,14 +69,14 @@ const updateUser = async (id, user) => {
 };
 
 const deleteUser = async (id) => {
-  //your code goes here
+  
   try {
     if (!getUserById(id)) {
       console.log("No matches ID");
       return;
     }
 
-    await conn.promise().query("delete from users where id =  ?", [id]);
+    await conn.promise().query("delete from users where id = ?", [id]);
   } catch (err) {
     console.log("Error while execute");
   }

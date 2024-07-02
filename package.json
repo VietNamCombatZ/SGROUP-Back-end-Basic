@@ -2,14 +2,18 @@
   "name": "khoa_be",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "buoi_9/bai_tap_buoi_9/routes/route.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.5",
+    "jsonwebtoken": "^9.0.2",
     "mysql": "^2.18.1",
-    "mysql2": "^3.10.1"
+    "mysql2": "^3.10.1",
+    "nodemon": "^3.1.4"
   }
 }

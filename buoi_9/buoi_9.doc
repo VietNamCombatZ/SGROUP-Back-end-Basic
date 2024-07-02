@@ -1,0 +1,20 @@
+1. Hash crypt function
+
+
+2. Cách counter hash encrypt function
+- Brute force attack
+- Dictionary
+- Rainbow table
+- Fishing
+
+
+3. Unix time bắt đầu từ 1-1-1970
+
+4. Hash token
+
+5.
+- Access token để lấy tài nguyên
+- Refresh token để làm mới Access token hết hạn
+(để xử lý việc token hết hạn quá nhanh khi chống hacker lấy token)
+
+6. JWT 
