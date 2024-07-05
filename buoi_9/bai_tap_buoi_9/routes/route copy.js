@@ -2,13 +2,9 @@ const conn = require("../database/connection.js");
 const validateToken = require ("../middleware/validateToken.js");
 const nodemailer = require ("nodemailer")
 const mailService  = require("../middleware/forgotPass.js")
-const secret = "your-64-byte-random-string-generated-above";
-
 
 const express = require("express");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-
 
 const app = express();
 const bodyParser = require("body-parser");
@@ -98,9 +94,9 @@ app.post("/page/login", async (req, res) =>{
   const { username, pass } = req.body;
   // console.log(req.body);
   try {
-     console.log(secret);
+     
     //Get login username, pass from database
-    const results = await conn.query(
+    const results = await db.query(
       "SELECT id, username, pass FROM user_db WHERE username = ?",
       [username]
     );
@@ -119,11 +115,11 @@ app.post("/page/login", async (req, res) =>{
       return res.status(400).json({ error: "Invalid username or password" });
     }
 
-    const token = jwt.sign({ id: user.id }, secret, {
+    const token = jwt.sign({ id: user.id }, process.env.MY_SECRET, {
       expiresIn: "30m",
     });
     res.send(token);
-    // res.redirect("/page/getAllInfo");
+    res.redirect("/page/getAllInfo");
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: "error from server" });
@@ -185,8 +181,7 @@ app.get("/page/getAllInfo", validateToken, async(req, res) => {
 //   await transporter.sendMail(emailOptions);
 // };
 
-
-
+//GPT code
 app.post("/page/forgot-pass", async (req, res) => {
   try {
     const userEmail = req.body.mail;
@@ -203,7 +198,7 @@ app.post("/page/forgot-pass", async (req, res) => {
       return res.status(400).send("Email is required");
     }
   } catch (err) {
-    console.error(err);
+    console.error("Error in /page/forgot-pass:", err);
     return res
       .status(500)
       .send("Error while executing forgot password function");
@@ -211,26 +206,30 @@ app.post("/page/forgot-pass", async (req, res) => {
 });
 
 const sendMail = async (option) => {
-  const transporter = nodemailer.createTransport({
-    host: "smtp.ethereal.email",
-    port: 587,
-    auth: {
-      user: "merlin95@ethereal.email",
-      pass: "Aq5pdmuahMGBSckXaQ",
-    },
-  });
+  try {
+    const transporter = nodemailer.createTransport({
+      host: "smtp.ethereal.email",
+      port: 587,
+      auth: {
+        user: "merlin95@ethereal.email",
+        pass: "Aq5pdmuahMGBSckXaQ",
+      },
+    });
 
-  const emailOptions = {
-    from: option.from,
-    to: option.to,
-    subject: option.subject,
-    text: option.text,
-  };
+    const emailOptions = {
+      from: option.from,
+      to: option.to,
+      subject: option.subject,
+      text: option.text,
+    };
 
-  await transporter.sendMail(emailOptions);
+    await transporter.sendMail(emailOptions);
+    console.log("Email sent successfully");
+  } catch (error) {
+    console.error("Error in sendMail:", error);
+    throw error;
+  }
 };
-
-
 
 async function hashPassword(pass) {
   var hashPass = await bcrypt.hash(pass, 13);
