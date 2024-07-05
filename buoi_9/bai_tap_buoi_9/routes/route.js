@@ -1,14 +1,13 @@
 const conn = require("../database/connection.js");
-const validateToken = require ("../middleware/validateToken.js");
-const nodemailer = require ("nodemailer")
-const mailService  = require("../middleware/forgotPass.js")
+const validateToken = require("../middleware/validateToken.js");
+const nodemailer = require("nodemailer");
+const mailService = require("../middleware/forgotPass.js");
 const secret = "your-64-byte-random-string-generated-above";
-
 
 const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
+const crypto = require("crypto");
 
 const app = express();
 const bodyParser = require("body-parser");
@@ -66,11 +65,12 @@ app.use(bodyParser.json());
 app.post("/page/register", async (req, res) => {
   try {
     var username = req.body.username;
-    var pass = req.body.pass; 
+    var pass = req.body.pass;
+    var mail = req.body.mail;
     var hashedPass = await hashPassword(pass);
 
-    await insertInfo(username, hashedPass);
-    res.status(200).send({ username, pass }); 
+    await insertInfo(username, hashedPass, mail);
+    res.status(200).send({ username, pass });
     // res.redirect("/page/getAllInfo");
   } catch (err) {
     res.status(500).send("Internal server error");
@@ -92,13 +92,12 @@ app.post("/page/register", async (req, res) => {
 //   }
 // });
 
-app.post("/page/login", async (req, res) =>{
-  
+app.post("/page/login", async (req, res) => {
   //Get username, pass from request
   const { username, pass } = req.body;
   // console.log(req.body);
   try {
-     console.log(secret);
+    console.log(secret);
     //Get login username, pass from database
     const results = await conn.query(
       "SELECT id, username, pass FROM user_db WHERE username = ?",
@@ -128,21 +127,19 @@ app.post("/page/login", async (req, res) =>{
     console.log(err);
     res.status(500).json({ error: "error from server" });
   }
-})
+});
 
-app.get("/page/getAllInfo", validateToken, async(req, res) => {
+app.get("/page/getAllInfo", validateToken, async (req, res) => {
   const allUsers = conn.query("select * from user_db");
   res.status(200).json(allUsers);
-
-})
-
+});
 
 // app.post("/page/forgot-pass", async (req,res) =>{
-//      try {  
+//      try {
 //       const userEmail = req.body.mail;
 //       console.log(userEmail);
 //       // if(userEmail != ""){
-//         sendMail({ 
+//         sendMail({
 //           from: "ForgotPass@gmail.com",
 //           to: userEmail,
 //           subject: "Reset Password",
@@ -157,9 +154,7 @@ app.get("/page/getAllInfo", validateToken, async(req, res) => {
 //       // else{
 //       //   return res.status(400).send("Can't send email");
 //       // }
-      
 
-      
 //      } catch (err) {
 //       return res.status(500).send("Error while execute forgotpass function")
 //      }
@@ -185,22 +180,46 @@ app.get("/page/getAllInfo", validateToken, async(req, res) => {
 //   await transporter.sendMail(emailOptions);
 // };
 
-
-
 app.post("/page/forgot-pass", async (req, res) => {
   try {
     const userEmail = req.body.mail;
+    if (!userEmail) {
+      return res.status(400).send("Email is required");
+    }
+
+    // var [user] = await conn.query(
+    //   "SELECT email FROM user_db where email = ?",
+    //   [userEmail]
+    // );
+    // console.log(user);
+    // if(user == []){
+    //   return res.status(404).send("Email not available");
+    // }
+
+    const secretKey = crypto.randomBytes(32).toString("hex");
+    const passwordResetToken = crypto
+      .createHash("sha256")
+      .update(secretKey)
+      .digest("hex");
+
+    const passwordResetExpiration = new Date(Date.now() + 10 * 60 * 1000);
+    console.log(passwordResetToken);
+    console.log(passwordResetExpiration);
+
+    await conn.query(
+      "update user_db set passwordResetToken = ?, passwordResetExpiration = ? where email = ?",
+      [passwordResetToken, passwordResetExpiration, userEmail]
+    );
+
     if (userEmail) {
       await sendMail({
         from: "ForgotPass@gmail.com",
         to: userEmail,
         subject: "Reset Password",
-        text: "Here is your reset password token: ",
+        text: "Here is your reset password token: " + passwordResetToken,
       });
 
       return res.status(200).send("Reset pass email sent, pls check your mail");
-    } else {
-      return res.status(400).send("Email is required");
     }
   } catch (err) {
     console.error(err);
@@ -230,7 +249,81 @@ const sendMail = async (option) => {
   await transporter.sendMail(emailOptions);
 };
 
+app.post("/page/reset-pass", async function (req, res) {
+  try {
+    const mail = req.body.mail;
+    const passwordResetToken = req.body.token;
+    const newPass = req.body.newpass;
 
+    //Get user from DB if match email, token, and time hasn't expired
+    const [user] = await conn.query(
+      "SELECT  * FROM user_db WHERE email = ? and passwordResetToken=? and passwordResetExpiration >= ?",
+      [mail, passwordResetToken, new Date(Date.now())]
+    );
+    console.log(new Date(Date.now()));
+    console.log(user);
+
+    //User not available -> return err
+    if (!user) {
+      return res.status(400).send("Invalid email");
+    }
+
+    //Create salt to add to hashed pass
+    var salt = crypto.randomBytes(32).toString("hex");
+    var hashedPassword = crypto
+      .pbkdf2Sync(newPass, salt, 13, 64, `sha512`)
+      .toString(`hex`);
+
+    var check = updateUser(mail,hashedPassword);
+    // var updateUser;
+    // async function update() {
+    //   await conn.query(
+    //     "update user_db set pass = ?, passwordResetToken=NULL, passwordResetExpiration = NULL where email = ? ",
+    //     [hashedPassword, mail],
+    //     (err, result) => {
+    //       if (!err) {
+    //         check = true;
+    //         console.log(check);
+    //       }
+    //     }
+    //   );
+    // }
+    console.log(check);
+    
+
+    if (check) {
+      return res.status(200).send("Changed password");
+    } else {
+      return res.status(404).send("Can't changed password");
+    }
+  } catch (err) {
+    console.error(err);
+    return res
+      .status(500)
+      .send("Error while executing forgot password function");
+  }
+});
+
+async function updateUser(email, pass){
+  try {
+    await conn.query(
+      "update user_db set pass = ?, passwordResetToken=NULL, passwordResetExpiration = NULL where email = ? ",
+      [pass, email],
+      (err) => {
+        if (err) {
+          throw err;
+          
+        }
+      }
+    );
+    return true;
+    
+    
+  } catch (err) {
+    return false;
+    
+  }
+}
 
 async function hashPassword(pass) {
   var hashPass = await bcrypt.hash(pass, 13);
@@ -238,11 +331,11 @@ async function hashPassword(pass) {
   return hashPass;
 }
 
-async function insertInfo(username, pass) {
+async function insertInfo(username, pass, email) {
   try {
     conn.query(
-      "INSERT INTO user_db (username, pass) VALUES (?, ?)",
-      [username, pass],
+      "INSERT INTO user_db (username, pass,email) VALUES (?, ?,?)",
+      [username, pass, email],
       (err) => {
         console.log("Error while insert");
       }
@@ -380,7 +473,6 @@ async function isUserExist(username) {
           console.err("Failed to check user available");
           return false;
         }
-
       }
     );
 
@@ -390,12 +482,11 @@ async function isUserExist(username) {
     } else {
       return false;
     }
-
   } catch (err) {
     console.log("Error while excute isUserExist");
     return false;
   }
-};
+}
 
 async function getUserInfo(username) {
   try {
