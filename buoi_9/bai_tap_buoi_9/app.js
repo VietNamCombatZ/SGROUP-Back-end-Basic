@@ -4,7 +4,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const port = 3000;
 
-const router = require("./routes/route_2.js");
+const router = require("./routes/route.js");
 
 app.use(bodyParser.json()); 
 

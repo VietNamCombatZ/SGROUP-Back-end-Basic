@@ -5,7 +5,7 @@ const crypto = require("crypto");
 const multer = require("multer");
 const nodemailer = require("nodemailer");
 
-const middleware = require("../middleware/forgotPass.js");
+const middleware = require("../middleware/middleware.js");
 
 require("dotenv").config();
 
