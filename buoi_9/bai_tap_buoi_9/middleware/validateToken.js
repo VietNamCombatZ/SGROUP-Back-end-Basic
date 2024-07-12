@@ -61,7 +61,7 @@ async function validateToken(req, res) {
   }
 }
 
-module.exports = validateToken;
+module.exports = {validateToken};
 
 
 

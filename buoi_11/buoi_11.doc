@@ -1,0 +1,3 @@
+1. Các cách upload file 
+- Base 64 -> sao lưu -> DB
+- Template engine -> static ->server ->

@@ -1,25 +1,26 @@
 const nodemailer = require("nodemailer");
+require("dotenv").config();
 
 const sendMail = async (option) => {  
   // console.log("check");
   const transporter = nodemailer.createTransport({
-    service: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT,
+    host: "smtp.ethereal.email",
+    port: parseInt(process.env.EMAIL_PORT, 10),
     auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
+      user: "merlin95@ethereal.email",
+      pass: "Aq5pdmuahMGBSckXaQ",
     },
   });
 
   const emailOptions = {
-    from: "Test Forgot Pass <ForgotPass@gmail.com>",
-    to: option.email,
+    from: "Test_Forgot_Pass<ForgotPass@gmail.com>",
+    to: option.to,
     subject: option.subject,
-    message: option.message
+    text: option.text
   }
 
   await transporter.sendMail(emailOptions);
 
 };
 
-module.exports = sendMail;
+module.exports = {sendMail};
