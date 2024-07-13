@@ -1,0 +1,21 @@
+1. IP
+
+- 1 số IP đặc biệt, 3000
+
+2. Router
+- Là 1 điều hướng có nhiệm vụ điều hướng người dùng khi từ trang này sang trang khác
+
+3. API METHOD
+
+- GET/POST/ PUT/ DELETE cái nào cx có body được
+
+4. Postman
+- Phải dùng Postman vì app.get chỉ dùng được có mỗi phương thức GET 
+
+5. Authentication  & Authorazation
+- Authentication: xác minh danh tính
+- Authorazation: xác minh quyền hạn
+
+
+*BTVN
+- So sánh import và require trong node.js
