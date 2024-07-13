@@ -1,7 +1,0 @@
-1. Require va Import
-- Nếu phát sinh lỗi 
--> Require thì khi chạy đến đoạn dùng  lệnh require mới phát sinh lỗi
--> Import duyệt qua hết các file và báo lỗi luôn
-
-- Import mới hơn dùng ít lỗi
-- 
