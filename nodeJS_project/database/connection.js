@@ -1,11 +1,14 @@
 const mysql = require("mysql2");
 const express = require("express");
+require("dotenv").config();
+
+console.log(process.env.DB_HOST);
 
 const conn = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "12341234",
-  database: "buoi_10",
+  host: process.env.DB_HOST, //localhost hoac IP
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
 }).promise();
 
 

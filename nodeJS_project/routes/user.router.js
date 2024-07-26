@@ -9,14 +9,24 @@ const middleware = require("../middleware/middleware.js");
 router.post("/register", userController.register);
 router.post("/login", userController.login);
 
-// router.get("/getAllInfo", userController.getAllUsers);
+router.get("/getAllUsers", userController.getAllUsers);
 
 router.post("/forgot-pass", userController.forgotPass);
 router.post("/reset-pass", userController.resetPass);
 
-// router.post("/single", userController.uploadSingleFile);
-// router.post("/multiple", userController.uploadMultipleFile);
+router.post("/single", middleware.uploadSingleFile,userController.uploadSingleFile); 
+router.post("/multiple",middleware.uploadMultipleFile, userController.uploadMultipleFile);
 
-// router.post("/poll", userController.poll);
+router.post("/check", middleware.validateToken, async(req,res) => {
+    res.status(200).send("check");
+})
+
+
+router.post("/create-poll", middleware.validateToken , middleware.createPoll,userController.createPoll);
+router.delete("/delete-poll/:id", middleware.deletePoll,userController.deletePoll);
+router.post('/create-option', middleware.createOption, userController.createOption)
+router.post("/vote",middleware.vote, userController.vote);
+router.delete("/unvote",middleware.unVote, userController.unVote);
+router.get("/get-vote/:id",middleware.getVote, userController.getVote);
 
 module.exports = router;
