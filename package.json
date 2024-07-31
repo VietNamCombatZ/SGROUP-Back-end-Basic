@@ -2,9 +2,9 @@
   "name": "khoa_be",
   "version": "1.0.0",
   "description": "",
-  "main": "buoi_9/bai_tap_buoi_9/app.js",
-  
+  "main": "nodeJS_project/app.js",
   "scripts": {
+    "start": "nodeJS_project/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
