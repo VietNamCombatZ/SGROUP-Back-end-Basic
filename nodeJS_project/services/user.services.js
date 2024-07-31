@@ -7,7 +7,7 @@ const nodemailer = require("nodemailer");
 const dotenv = require("dotenv");
 
 const middleware = require("../middleware/middleware.js");
-dotenv.config();
+dotenv.config();      
 
 //!!! Can't use env variable
 const secret = "your-64-byte-random-string-generated-above";
