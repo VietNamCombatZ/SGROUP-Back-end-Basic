@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  app:
+    image: my-image:latest
+    ports:
+      - "3306:3306"
+    environment:
+      - APP_ENV=production
+      - DATABASE_URL=mysql://root:password@db:3306/mydatabase
+    depends_on:
+      - db
+
+  db:
+    image: vietnamcombatz/docker_mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypassword
+    ports:
+      - "3306:3306"
+
+volumes:
+  db-data:
+    driver: local
