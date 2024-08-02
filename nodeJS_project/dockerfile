@@ -1,0 +1,26 @@
+# Use a base image with the required Node.js version
+FROM node:20-alpine
+
+# Install necessary build tools
+RUN apk add --no-cache python3 make g++
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy package.json and package-lock.json to the container
+COPY package*.json ./
+
+# Install dependencies within the container
+RUN npm install
+
+# Copy the rest of the application files to the container
+COPY . .
+
+# Expose the port your app runs on
+EXPOSE 3000
+
+# Rebuild native modules
+RUN npm rebuild bcrypt --build-from-source
+
+# Specify the command to run your application
+CMD ["npm", "start"]

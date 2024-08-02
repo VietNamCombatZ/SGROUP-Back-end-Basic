@@ -1,0 +1,37 @@
+1. Static servering
+
+
+2. Mô hình MVC 
+
+
+3. Lập trình OOP 
+* 4 thuộc tính cơ bản:
+- Đóng gói (Encapsulation)
++ Là cách để che dấu những tính chất xử lý bên trong của đối tượng, 
+  những đối tượng khác không thể tác động trực tiếp làm thay đổi trạng thái,
+  chỉ có thể tác động thông qua các method public của đối tượng đó
+
+- Kế thừa (Inheritance)
++ Cho phép kế thừa lại những tính năng mà một đối tượng khác đã có,
+  giúp tránh việc code lặp dư thừa mà chỉ xử lý công việc tương tự
+
+- Đa hình (Polymorphism)
++ Một đối tượng thuộc các lớp khác nhau có thể hiểu cùng một thông điệp theo cách khác nhau.
++ Có 2 cách để thể hiện tính đa hình:  - Overridding
+                                       - Overloading
+                    
+- Trừu tượng (Abstraction)
+
+
+- Vd: DS Động vật gồm  chó, mèo, heo
+=> Class: động vật
+=> Object: chó, mèo, heo
+
+* Overridding là gì ?
+- Ghi đè đặc tính của lớp cha bằng đặc tính của lớp con (cái gì thấp nhất sẽ được gọi) 
+
+4. Github
+- Pull request
+- git checkout, pull, fetch, merge
+- conflict khi git push/pull  gì đó, nếu thêm xóa 1 dòng thì git tự sửa luôn, còn sửa trên 1 dòng thì sẽ có conflict
+- 

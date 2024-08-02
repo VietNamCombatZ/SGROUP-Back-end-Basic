@@ -1,0 +1,17 @@
+1. Không nhét token & user vào req.body
+*Với token:
+- Postman  -> Authorization -> Auth Type -> Bearer Token -> Nhét token vào ô token
+-> JS: req.header.authorization.token (sẽ dính thêm bearer, cần thêm bước split để thu dc token)
+
+*với username:
+-B1: const [user] = await conn.query(
+      "SELECT  * FROM user_db WHERE username = ? and token=? and tokenExpiration >= ?",
+      [username, token, new Date(Date.now())]
+    );
+
+-B2: gán req.user = user;
+-B3: từ đây, mỗi khi cần lấy thông tin gì chỉ cần req.user.username
+
+
+
+

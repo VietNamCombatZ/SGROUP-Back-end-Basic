@@ -1,0 +1,30 @@
+1. HTTP/HTTPS:
+- Create: POST
+- Read: GET
+- Update: PUT/PATCH
+- Delete: Delete
+
+-> Tất cả METHOD đều có thể dùng cho bất kì tác vụ nào cũng được, 
+nhưng vì do Restful API nên phải dùng đúng cú pháp vì lập trình theo đối tượng
+
+
+- 1 HTTP request gồm:
++ URL
++ METHOD
++ Status code
+
+- HTTPS có thể không mã hóa khi thông tin dc lưu trữ tại đó
+
+2. NodeJS
+- Là runtime environment chớ không phải ngôn ngữ lập trình
+- Có YARN và NPM, thường dùng NPM để khỏi tải về, YARN thì nhanh hơn xíu
+
+BackJS code BE
+NetJS code FE dùng 1 số framework vd ReactJS
+
+*BT: 
+- All status code:
+- package JS
+- package dock.json
+- node .json
+- Create AWS account
