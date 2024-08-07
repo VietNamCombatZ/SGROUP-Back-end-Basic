@@ -1,0 +1,2 @@
+-- REVIEW --
+1. Lý do phải chạy ngầm là tắt terminal của SSH (EC2) nó sẽ ko tắt app
